@@ -5,26 +5,36 @@ import com.example.bookkmm.data.NetworkService
 import com.example.bookkmm.data.RemoteDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
 fun appModule() = module {
+    single {
+        Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            prettyPrint = true
+        }
+    }
+
     single<HttpClient> {
         HttpClient {
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        isLenient = true
-                        ignoreUnknownKeys = true
-                        prettyPrint = true
-                    }
-                )
+                json(get())
+            }
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.ALL
             }
         }
     }
 
-    single { NetworkService(get()) }
+    single { NetworkService(get(),get()) }  // Assumes NetworkService only requires HttpClient
     single { RemoteDataSource(get()) }
     single { Repository(get()) }
 }

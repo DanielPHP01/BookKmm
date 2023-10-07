@@ -46,7 +46,6 @@ kotlin {
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-test:${koinVersion}")
                 implementation("io.ktor:ktor-client-cio:$ktorVersion")
-                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
         val commonTest by getting {
@@ -65,6 +64,7 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
     }
