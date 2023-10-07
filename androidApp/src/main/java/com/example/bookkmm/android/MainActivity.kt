@@ -3,7 +3,6 @@ package com.example.bookkmm.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,11 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.example.bookkmm.data.model.BookVolume
-import com.example.bookkmm.ui.MainViewModel
+import com.example.bookkmm.MainViewModel
 import androidx.compose.runtime.*
-import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberImagePainter
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : ComponentActivity() {
@@ -44,8 +40,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HomeScreen(viewModel: MainViewModel) {
     var editText by remember { mutableStateOf("") }
-    var data by remember { mutableStateOf<List<BookVolume.VolumeItem>>(emptyList()) }
-    val coroutineScope = rememberCoroutineScope()
+    val books by viewModel.booksFlow.collectAsState(initial = emptyList())
 
     Column(
         modifier = Modifier
@@ -63,22 +58,18 @@ fun HomeScreen(viewModel: MainViewModel) {
 
         Button(
             onClick = {
-                coroutineScope.launch {
-                    viewModel.getBooks(editText).collect { books ->
-                        data = books
-                    }
-                }
+                viewModel.getBooks(editText)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Search")
         }
 
-        if (data.isNotEmpty()) {
+        if (books.isNotEmpty()) {
             LazyColumn {
-                items(data.size) { index ->
-                    val book1 = data[index]
-                    BookItem(book = book1)
+                items(books.size) { index ->
+                    val book = books[index]
+                    BookItem(book = book)
                 }
             }
         }

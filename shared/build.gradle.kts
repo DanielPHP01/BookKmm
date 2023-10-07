@@ -34,7 +34,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("com.rickclephas.kmm:kmm-viewmodel-core:1.0.0-ALPHA-14")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:${serializationVersion}")
                 implementation("io.ktor:ktor-client-core:${ktorVersion}")
                 implementation("io.ktor:ktor-client-json:${ktorVersion}")
@@ -46,6 +45,8 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
                 implementation("io.insert-koin:koin-core:${koinVersion}")
                 implementation("io.insert-koin:koin-test:${koinVersion}")
+                implementation("io.ktor:ktor-client-cio:$ktorVersion")
+                implementation("io.ktor:ktor-client-ios:$ktorVersion")
             }
         }
         val commonTest by getting {
@@ -64,7 +65,6 @@ kotlin {
         }
         val iosMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-ios:${ktorVersion}")
             }
         }
     }
