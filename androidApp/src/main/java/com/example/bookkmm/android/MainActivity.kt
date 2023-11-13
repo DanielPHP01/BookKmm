@@ -41,6 +41,7 @@ class MainActivity : ComponentActivity() {
 fun HomeScreen(viewModel: MainViewModel) {
     var editText by remember { mutableStateOf("") }
     val books by viewModel.booksFlow.collectAsState(initial = emptyList())
+    val errorMessage by viewModel.errorMessage.collectAsState(initial = null)
 
     Column(
         modifier = Modifier
@@ -64,6 +65,16 @@ fun HomeScreen(viewModel: MainViewModel) {
         ) {
             Text(text = "Search")
         }
+
+        if (errorMessage != null) {
+            // Отобразить сообщение об ошибке
+            Text(
+                text = errorMessage!!,
+                color = Color.Red,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
+
 
         if (books.isNotEmpty()) {
             LazyColumn {

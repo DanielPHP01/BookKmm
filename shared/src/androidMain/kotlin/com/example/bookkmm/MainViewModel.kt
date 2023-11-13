@@ -1,6 +1,7 @@
 package com.example.bookkmm
 
 import Repository
+import com.example.bookkmm.data.Either
 import com.example.bookkmm.data.model.BookVolume
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,21 @@ actual class MainViewModel actual constructor(
     private val _booksFlow = MutableStateFlow<List<BookVolume.VolumeItem>>(emptyList())
     actual val booksFlow: Flow<List<BookVolume.VolumeItem>> get() = _booksFlow
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    actual val errorMessage: Flow<String?> get() = _errorMessage
+
     actual fun getBooks(query: String) {
         repository.getBooks(query)
             .flowOn(Dispatchers.Main)
-            .onEach { _booksFlow.value = it }
+            .onEach {
+                when (it) {
+                    is Either.Right -> {
+                        _booksFlow.value = it.value
+                        _errorMessage.value = null
+                    }
+                    is Either.Left ->  _errorMessage.value = it.value
+                }
+            }
             .launchIn(scope)
     }
 }

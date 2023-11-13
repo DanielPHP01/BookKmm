@@ -34,7 +34,7 @@ fun appModule() = module {
         }
     }
 
-    single { NetworkService(get(),get()) }  // Assumes NetworkService only requires HttpClient
+    single { NetworkService(get(),get()) }
     single { RemoteDataSource(get()) }
     single { Repository(get()) }
 }
